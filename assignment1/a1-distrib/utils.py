@@ -6,6 +6,24 @@ class Indexer(object):
     Bijection between objects and integers starting at 0. Useful for mapping
     labels, features, etc. into coordinates of a vector space.
 
+    Translator between numbers and words. Basically creates a mapping between each word and the number assigned to it.
+    Stores this mapping in two dictionaries:
+    - objs_to_ints: maps an object → its number
+    - ints_to_objs: maps a number → its object
+
+    Example usage:
+    indexer = Indexer()
+    indexer.add_and_get_index("cat")  # returns 0
+    indexer.add_and_get_index("dog")  # returns 1
+    indexer.add_and_get_index("cat")  # returns 0
+    indexer.get_object(1)              # returns "dog"
+    indexer.index_of("cat")            # returns 0
+    indexer.contains("cat")            # returns True
+    indexer.contains("elephant")       # returns False
+    len(indexer)                       # returns 2
+    indexer.get_object(2)              # returns None
+    indexer.index_of("elephant")       # returns -1
+
     Attributes:
         objs_to_ints
         ints_to_objs
@@ -15,12 +33,22 @@ class Indexer(object):
         self.ints_to_objs = {}
 
     def __repr__(self):
+        '''
+        :return: Returns a string representation of the Indexer
+        '''
         return str([str(self.get_object(i)) for i in range(0, len(self))])
 
     def __str__(self):
+        '''
+        :return: Returns a string representation of the Indexer
+        '''
         return self.__repr__()
 
     def __len__(self):
+        '''
+        :return: Returns the number of objects in the Indexer
+        '''
+        # returns the number of objects in the indexer
         return len(self.objs_to_ints)
 
     def get_object(self, index):
@@ -71,19 +99,37 @@ class Beam(object):
     Beam data structure. Maintains a list of scored elements like a Counter, but only keeps the top n
     elements after every insertion operation. Insertion is O(n) (list is maintained in
     sorted order), access is O(1). Still fast enough for practical purposes for small beams.
+
+    Like a top scores list, acts like a leaderboard. Keeps the best n elements according to their scores.
+    Attributes:
+        size: maximum size of the beam
+        elts: list of elements currently in the beam
+        scores: list of scores corresponding to the elements in the beam
     """
     def __init__(self, size):
+        '''
+        :param size: maximum size of the beam
+        '''
         self.size = size
         self.elts = []
         self.scores = []
 
     def __repr__(self):
+        '''
+        :return: Returns a string representation of the Beam
+        '''
         return "Beam(" + repr(list(self.get_elts_and_scores())) + ")"
 
     def __str__(self):
+        '''
+        :return: Returns a string representation of the Beam
+        '''
         return self.__repr__()
 
     def __len__(self):
+        """
+        :return: Returns the number of elements currently in the beam
+        """
         return len(self.elts)
 
     def add(self, elt, score):
